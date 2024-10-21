@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify, make_response
 import requests
 from bs4 import BeautifulSoup
 
@@ -10,7 +10,22 @@ def home():
 
 @app.route('/soph-honors')
 def soph_honors():
-    r = requests.get('https://sklarnation.com/sophomore-honors-english').text
-    soup = BeautifulSoup(r, 'html.parser')
-    maindiv = soup.find_all('div', class_='entry-content')[0]
-    return str(maindiv)
+    if request.method == 'OPTIONS': # CORS preflight
+        return _build_cors_preflight_response()
+    elif request.method == 'GET': # The actual request following the preflight
+        r = requests.get('https://sklarnation.com/sophomore-honors-english').text
+        soup = BeautifulSoup(r, 'html.parser')
+        maindiv = soup.find_all('div', class_='entry-content')[0]
+        return _corsify_actual_response(make_response(str(maindiv)))
+
+
+def _build_cors_preflight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*") # change this later to only allow github pages site
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+def _corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
