@@ -21,7 +21,7 @@ def soph_honors():
 
 def _build_cors_preflight_response():
     response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "https://shibby360.github.io") # change this later to only allow github pages site
+    response.headers.add("Access-Control-Allow-Origin", "https://shibby360.github.io")
     response.headers.add('Access-Control-Allow-Headers', "*")
     response.headers.add('Access-Control-Allow-Methods', "*")
     return response
