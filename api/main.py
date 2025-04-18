@@ -36,12 +36,13 @@ def soph_honors_today():
     soup = BeautifulSoup(r, 'html.parser')
     maindiv = soup.find_all('div', class_='entry-content')[0]
     foundweek = False
-    for i in maindiv.findAll('p'):
+    for i in maindiv.find_all('p'):
         if i.text.startswith('Week'):
             if foundweek: break
             datestring = i.text.split('— ')[1].split(',')[0]
             dates = datestring.split('-')
-            if not dates[1].isalpha():
+            if not any(c.isalpha() for c in dates[1]): # checks if any alpha characters are present
+                print("dates[1] isn't numeric")
                 dates[1] = dates[0].split(' ')[0] + ' ' + dates[1]
             if convert_date_to_days(dates[0]) <= convert_date_to_days(today) <= convert_date_to_days(dates[1]):
                 foundweek = True
